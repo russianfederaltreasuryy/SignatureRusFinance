@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Протокол проверки ЭЦП</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f2f6fb;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #1b4f72;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      position: relative;
+      z-index: 2;
+      transition: background-color 0.4s ease;
+    }
+
+    .container.dimmed {
+      background-color: rgba(255,255,255,0.8);
+    }
+
+    .status-box {
+      background: #e6f7e6;
+      border: 1px solid #91d591;
+      padding: 10px 20px;
+      border-radius: 5px;
+      color: #2d702d;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    .details {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.6s ease, opacity 0.4s ease;
+      opacity: 0;
+    }
+
+    .details.open {
+      max-height: 2000px;
+      opacity: 1;
+    }
+
+    .details dt {
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-top: 10px;
+      opacity: 0;
+      transform: translateX(-30px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .details dd {
+      margin-left: 10px;
+      opacity: 0;
+      transform: translateX(-30px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .details.open dt,
+    .details.open dd {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 15px;
+      font-size: 14px;
+      background-color: #1b4f72;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    .toggle-btn:hover {
+      background-color: #21618c;
+    }
+
+    .arrow {
+      margin-left: 8px;
+      transition: transform 0.4s ease;
+    }
+
+    .arrow.open {
+      transform: rotate(180deg);
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0);
+      z-index: 1;
+      transition: background-color 0.4s ease;
+      pointer-events: none;
+    }
+
+    .overlay.active {
+      background-color: rgba(0, 0, 0, 0.3);
+      pointer-events: all;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <span style="font-size: 24px;">ФЕДЕРАЛЬНОЕ КАЗНАЧЕЙСТВО РФ</span>
+</header>
+
+<audio id="clickSound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_5c9b8c13d1.mp3" preload="auto"></audio>
+
+<div class="overlay" id="overlay" onclick="toggleDetails()"></div>
+
+<div class="container" id="mainContainer">
+  <div class="status-box">
+    ✅ Электронная подпись действительна — Документ подписан Федеральным казначейством
+  </div>
+
+  <button class="toggle-btn" id="toggleBtn" onclick="toggleDetails()">
+    Показать детали <span id="arrowIcon" class="arrow">▼</span>
+  </button>
+
+  <dl class="details" id="detailsBlock">
+    <dt>Статус подписи:</dt>
+    <dd>ДЕЙСТВИТЕЛЬНА</dd>
+
+    <dt>Статус сертификата подписи:</dt>
+    <dd>ДЕЙСТВИТЕЛЕН</dd>
+
+    <dt>Владелец сертификата:</dt>
+    <dd>
+      Федеральное казначейство Российской Федерации<br>
+      Email: info@roskazna.gov.ru<br>
+      Адрес: г. Москва, ул. Большая Пироговская, д. 7<br>
+      ИНН: 7707251606<br>
+      ОГРН: 1047796979830
+    </dd>
+
+    <dt>Издатель сертификата:</dt>
+    <dd>
+      Удостоверяющий центр ФНС России<br>
+      Email: ca@nalog.gov.ru<br>
+      Адрес: г. Москва, ул. Неглинная, д. 23<br>
+      ИНН: 7707329152<br>
+      ОГРН: 1047707030513
+    </dd>
+
+    <dt>Серийный номер:</dt>
+    <dd>148230987234098723409872340987234098723</dd>
+
+    <dt>Срок действия:</dt>
+    <dd>с 01.02.2025 по 31.01.2028</dd>
+  </dl>
+</div>
+
+<script>
+  const audio = document.getElementById('clickSound');
+
+  function toggleDetails() {
+    const block = document.getElementById('detailsBlock');
+    const arrow = document.getElementById('arrowIcon');
+    const overlay = document.getElementById('overlay');
+    const container = document.getElementById('mainContainer');
+    const button = document.getElementById('toggleBtn');
+
+    const isOpen = block.classList.contains('open');
+
+    block.classList.toggle('open');
+    arrow.classList.toggle('open');
+    overlay.classList.toggle('active');
+    container.classList.toggle('dimmed');
+
+    button.innerHTML = isOpen
+      ? 'Показать детали <span id="arrowIcon" class="arrow">▼</span>'
+      : 'Закрыть <span id="arrowIcon" class="arrow open">▲</span>';
+
+    audio.currentTime = 0;
+    audio.play();
+  }
+</script>
+
+</body>
+</html>
